@@ -26,6 +26,56 @@
             des employés. Vous pouvez ajouter de nouvelles absences, consulter les listes d'absences existantes,
             générer des statistiques, ou encore explorer les différents types d'absences disponibles.
           </p>
+          <button @click="show = !show">Procédures reliées à la prise d’absence spécifique</button>
+           <Transition>
+             <p v-if="show">Pour la définition, la durée et le nombre, les employés doivent se référer à leur convention collective ou leur contrat de travail.
+Vacances, reprise de temps
+La demande doit être faite avant la prise du congé en utilisant le formulaire.
+Un congé refusé ne peut pas être pris sous une autre forme ou en invoquant une autre raison. Ce type d’attitude sera sanctionné.
+Jours fériés
+Les congés sont pris en fonction du calendrier scolaire.
+Aucune autorisation n’est requise.
+Congés sociaux
+La demande doit être faite, si possible, avant la prise du congé en utilisant le formulaire (à produire par votre établissement) et les pièces justificatives doivent être jointes.
+Formation
+La demande doit être faite avant l’inscription en utilisant le formulaire.
+Activités syndicales
+La demande doit être faite avant l’inscription, l’absence ou la participation à un comité en utilisant le formulaire.
+ 
+Congés maladie et affaires personnelles
+Pour les congés personnels, la demande doit être faite quarante-huit heures avant le départ, en utilisant le formulaire.
+Dans un cas d’urgence, le supérieur immédiat doit être joint par téléphone afin de prévenir de l’absence. L’employé régularisera la situation à son retour.
+Soyez avisé que les congés maladie constituent une assurance et non un droit. L’employé doit les utiliser seulement lorsque des problèmes de santé l’empêchent de se présenter au travail.
+Pour les cas de maladie, un certificat médical doit être produit pour les absences de trois jours consécutifs et plus et dans tous les cas où l’employeur le demande spécifiquement. Un certificat médical, pour être valide, doit comporter un diagnostic et une date de retour ou de la prochaine consultation (pronostic).  Une absence pour laquelle le certificat médical ne sera pas complet sera jugée non justifiée.
+Invalidité
+Pour les cas d’invalidité, un certificat médical doit être produit.
+Un certificat médical pour être valide doit comporter un diagnostic et une date de retour ou de la prochaine consultation (pronostic).  Une absence pour laquelle le certificat médical ne sera pas complet sera jugée non justifiée.
+L’employé est tenu de prendre contact régulièrement avec son supérieur, ou les ressources humaines, afin de déterminer son état de santé, c'est-à-dire savoir si son remplacement doit se poursuivre et approximativement pour combien de temps.
+Il est tenu de participer à toutes les mesures visant son retour au travail dans les meilleurs délais. Il est également encouragé à consulter le « Guide de l’employé en cas d’invalidité » de la FEEP par le biais du portail SARAF en cliquant ici -- > Guide.
+Accident du travail
+Dans le cas où l’employé doit quitter l’établissement, il est préférable, si possible, de remplir le formulaire de déclaration d’accident avant son départ. Faire parvenir le formulaire de la CNESST rempli par son médecin par la suite.
+Un certificat médical pour être valide doit comporter un diagnostic et une date de retour ou de la prochaine consultation (pronostic). Une absence pour laquelle le certificat médical ne sera pas complet sera jugée non justifiée.
+L’employé est tenu de prendre contact régulièrement avec son supérieur immédiat afin de déterminer son état de santé, c'est-à-dire savoir si son remplacement doit se poursuivre et approximativement pour combien de temps.
+Il est tenu de participer à toutes les mesures visant son retour au travail dans les meilleurs délais.
+L’employé est tenu de participer activement aux mesures d’assignation temporaire.
+ 
+Congés parentaux
+Pour avoir droit au congé parental (maternité, paternité, adoption) l’employé doit produire les documents médicaux ou juridiques appropriés et les produire dans le délai déterminé au contrat de travail.
+Congés pour obligations familiales
+Ce congé prévu par la Loi sur les normes du travail comporte des conditions d’utilisation.  D’une part, l’employé doit aviser son supérieur le plus tôt possible et il doit prendre tous les moyens à sa disposition afin de limiter la prise et la durée du congé.
+Retards
+Tout employé qui se présente au travail en retard doit obligatoirement se rendre au bureau de son supérieur immédiat à son arrivée pour expliquer son retard.  Le motif « raison personnelle » n’est pas acceptable.
+Tempête
+Absence découlant de la décision d’une autorité compétente (Sûreté du Québec, Sûreté municipale, Protection civile, ministère des Transports).
+L’employé doit en informer son supérieur le plus rapidement possible.
+Retrait préventif
+Le retrait préventif ne vise pas à donner un congé à la travailleuse enceinte, mais à éliminer les dangers présents dans son environnement de travail afin de lui permettre de rester au travail. La salariée doit donc collaborer avec l’employeur à l’élimination de ces dangers et être présente au travail.
+Si les dangers ne peuvent pas être éliminés, que les méthodes de travail ne peuvent pas être adaptées et qu’aucun autre travail ne peut être assigné, seulement à ce moment, la salariée pourra demeurer chez elle.
+Rendez-vous médicaux
+Les rendez-vous médicaux ne sont pas des congés maladie. Ils doivent se prendre à l’extérieur de vos heures de travail. Exceptionnellement, un congé maladie ou un congé pour raison familiale pourra être utilisé pour ce type d’absence, mais seulement après autorisation.
+ 
+</p>
+            </Transition>
         </div>
       </div>
     </div>
@@ -42,6 +92,8 @@
   const toggleMenu = () => {
     menuOpen.value = !menuOpen.value
   }
+
+  const show = ref(false)
   </script>
   
   <style scoped>
