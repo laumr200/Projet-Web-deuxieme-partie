@@ -12,6 +12,8 @@ import AbsenceAdd from '../components/Absence/AbsenceAdd.vue'
 import AbsenceList from '../components/Absence/AbsenceList.vue'
 import AbsenceMenu from '../components/Absence/AbsenceMenu.vue'
 import Accueil from '../components/Accueil.vue'
+import Login from '../components/auth/Login.vue'
+import RoleMenu from '../components/Role/RoleMenu.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -72,7 +74,26 @@ const router = createRouter({
       name: 'AbsenceMenu',
       component: AbsenceMenu,
     },
-
+    {
+      path: '/login',
+      name: 'se connecter',
+      component: Login,
+    },
+    {
+      path: '/add-role',
+      name: 'add role',
+      component: AddRole,
+    },
+    {
+      path: '/roles',
+      name: 'ROLE LISTE',
+      component: RoleList,
+    },
+    {
+      path: '/role-menu',
+      name: 'RoleMenu',
+      component: RoleMenu,
+    },
 
   ],
 })

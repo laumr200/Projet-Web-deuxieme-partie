@@ -61,7 +61,7 @@ const selectedEmploye = ref(null) // Employé sélectionné
 // Charger la liste des employés depuis l'API
 const getEmployes = () => {
   axios
-    .get('http://localhost:5000/api/employes') // Remplacez par votre URL réelle
+    .get('http://localhost:5000/api/employes') 
     .then((res) => {
       employes.value = res.data
     })

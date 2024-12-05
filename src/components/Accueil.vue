@@ -1,4 +1,4 @@
-<<template>
+<template>
   <div class="homepage">
     <!-- Menu latéral -->
     <div class="sidebar" :class="{ open: menuOpen }">
@@ -8,6 +8,7 @@
       <ul v-if="menuOpen">
         <li><router-link to="/absence-menu">Absences</router-link></li>
         <li><router-link to="/employe-menu">Employés</router-link></li>
+        <li><router-link to="/role-menu">Roles</router-link></li>
       </ul>
     </div>
 
@@ -74,6 +75,7 @@ const open = ref(false);
   overflow: hidden;
   background-color: #f0f8ff; /* Bleu clair */
 }
+
 
 /* Sidebar */
 .sidebar {

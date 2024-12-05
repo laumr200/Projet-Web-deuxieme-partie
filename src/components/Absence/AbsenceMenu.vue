@@ -8,6 +8,7 @@
         <ul v-if="menuOpen">
           <li><RouterLink to="/add-absence">Ajouter une absence</RouterLink></li>
           <li><RouterLink to="/absences">Liste des Absences</RouterLink></li>
+          <li><a @click.prevent="goBack" href="#">⬅ Retour</a></li>
         </ul>
       </div>
   
@@ -26,7 +27,7 @@
             des employés. Vous pouvez ajouter de nouvelles absences, consulter les listes d'absences existantes,
             générer des statistiques, ou encore explorer les différents types d'absences disponibles.
           </p>
-          <button @click="show = !show">Procédures reliées à la prise d’absence spécifique</button>
+          <button  class="btn-primary" @click="show = !show">Procédures reliées à la prise d’absence spécifique</button>
            <Transition>
              <p v-if="show">Pour la définition, la durée et le nombre, les employés doivent se référer à leur convention collective ou leur contrat de travail.
 Vacances, reprise de temps
@@ -74,16 +75,19 @@ Si les dangers ne peuvent pas être éliminés, que les méthodes de travail ne 
 Rendez-vous médicaux
 Les rendez-vous médicaux ne sont pas des congés maladie. Ils doivent se prendre à l’extérieur de vos heures de travail. Exceptionnellement, un congé maladie ou un congé pour raison familiale pourra être utilisé pour ce type d’absence, mais seulement après autorisation.
  
-</p>
+     </p>
             </Transition>
         </div>
       </div>
-    </div>
+  </div>
   </template>
   
   <script setup>
   import { ref } from 'vue'
   import { RouterLink } from 'vue-router'
+  import { useRouter } from 'vue-router'; 
+
+  
   
   // Contrôle de l'ouverture du menu
   const menuOpen = ref(false)
@@ -94,6 +98,11 @@ Les rendez-vous médicaux ne sont pas des congés maladie. Ils doivent se prendr
   }
 
   const show = ref(false)
+
+  // Fonction pour revenir à la page précédente
+const goBack = () => {
+  router.back() // Revient à la page précédente dans l'historique
+}
   </script>
   
   <style scoped>
@@ -184,5 +193,15 @@ Les rendez-vous médicaux ne sont pas des congés maladie. Ils doivent se prendr
     border-radius: 50%;
     padding: 10px;
   }
+
+  .btn-primary {
+  background-color: #ff6600;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
   </style>
   
