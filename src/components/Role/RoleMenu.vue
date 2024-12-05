@@ -10,7 +10,7 @@
           <li><RouterLink to="/add-role">Ajouter un Rôle</RouterLink></li>
           <li><RouterLink to="/ajouter-employes">Assigner un Rôle à un Employé</RouterLink></li>
           <li><RouterLink to="/employes/:id/roles">Voir les Rôles d'un Employé</RouterLink></li>
-          <li><a @click.prevent="goBack" href="#">⬅ Retour</a></li>
+          <li><RouterLink to="/">Retour-Accueil</RouterLink></li>
         </ul>
       </div>
   
@@ -45,10 +45,6 @@
     menuOpen.value = !menuOpen.value
   }
 
-  // Fonction pour revenir à la page précédente
-const goBack = () => {
-  router.back() // Revient à la page précédente dans l'historique
-}
   </script>
   
   <style scoped>
