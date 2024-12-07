@@ -21,7 +21,7 @@
 
     <!-- Contenu principal -->
     <div class="main-content">
-      <div class="absence-add-container">
+      <div class="absence-liste-container">
         <!-- En-tête -->
         <h1>Gestion des Absences</h1>
 
@@ -35,35 +35,55 @@
                   <th>Date</th>
                   <th>Type</th>
                   <th>Justification</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 <!-- Message si aucune absence -->
                 <tr v-if="absences.length === 0">
-                  <td colspan="4" class="text-center">Aucune absence trouvée.</td>
+                  <td colspan="5" class="text-center">Aucune absence trouvée.</td>
                 </tr>
                 <!-- Liste des absences -->
                 <tr
-                  v-for="absence in absences"
-                  :key="absence.id"
-                  @click="selectAbsence(absence)"
-                  :class="{ selected: selectedAbsence && selectedAbsence.id === absence.id }"
-                >
-                  <td>{{ absence.id }}</td>
-                  <td>{{ absence.date_absence }}</td>
-                  <td>{{ absence.type_absence }}</td>
-                  <td>{{ absence.justification || 'Non spécifiée' }}</td>
-                </tr>
+    v-for="absence in absences"
+    :key="absence.id"
+    @click="selectAbsence(absence)"
+    :class="{ selected: selectedAbsence && selectedAbsence.id === absence.id }"
+  >
+    <td>{{ absence.id }}</td>
+    <td>
+      <input
+        v-if="editingAbsence === absence.id"
+        type="date"
+        v-model="absence.date_absence"
+      />
+      <span v-else>{{ absence.date_absence }}</span>
+    </td>
+    <td>
+      <input
+        v-if="editingAbsence === absence.id"
+        type="text"
+        v-model="absence.type_absence"
+      />
+      <span v-else>{{ absence.type_absence }}</span>
+    </td>
+    <td>
+      <input
+        v-if="editingAbsence === absence.id"
+        type="text"
+        v-model="absence.justification"
+      />
+      <span v-else>{{ absence.justification || 'Non spécifiée' }}</span>
+    </td>
+    <td>
+      <!-- Boutons d'action -->
+      <v-btn  class="btn btn-primary" @click.stop="editAbsence(absence)">Modifier</v-btn>
+      <v-btn  class="btn btn-danger" @click.stop="confirmDelete(absence)">Supprimer</v-btn>
+    </td>
+  </tr>
               </tbody>
             </table>
           </v-col>
-        </v-row>
-
-        <!-- Panneau de contrôle -->
-        <v-row class="control-panel">
-          <v-btn color="success" @click="editSelectedAbsence" :disabled="!selectedAbsence">Modifier</v-btn>
-          <v-btn color="error" @click="deleteSelectedAbsence" :disabled="!selectedAbsence">Supprimer</v-btn>
-          <v-btn color="info" @click="goBack">Retour</v-btn>
         </v-row>
 
         <!-- Barre d'état -->
@@ -75,8 +95,20 @@
         </div>
       </div>
     </div>
+
+    <!-- Modale de confirmation -->
+    <div v-if="isModalOpen" class="modal-overlay">
+      <div class="modal-content">
+        <p>Êtes-vous sûr de vouloir supprimer l'absence ID {{ selectedAbsence?.id }} ?</p>
+        <div class="modal-actions">
+          <button @click="deleteAbsence" class="btn btn-danger">Oui</button>
+          <button @click="closeModal" class="btn btn-secondary">Non</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
 
 <script setup>
 import { ref, onBeforeMount } from 'vue';
@@ -85,36 +117,73 @@ import axios from 'axios';
 // Liste des absences et absence sélectionnée
 const absences = ref([]);
 const selectedAbsence = ref(null);
+const editingAbsence = ref(null); // Absence en mode édition
+
+
+// État de la modale
+const isModalOpen = ref(false);
 
 // Charger toutes les absences depuis l'API
 const getAllAbsences = () => {
   axios
-    .get('http://localhost:5000/api/absences') // Remplacez par votre URL réelle
+    .get('http://localhost:5000/api/absences') 
     .then((res) => {
       absences.value = res.data.data;
     })
     .catch((err) => console.log(err));
 };
 
-// Modifier l'absence sélectionnée
-const editSelectedAbsence = () => {
-  if (selectedAbsence.value) {
-    alert(`Modifier l'absence ID : ${selectedAbsence.value.id}`);
+// Modifier une absence
+
+const editAbsence = (absence) => {
+  if (editingAbsence.value === absence.id) {
+    // Si l'absence est déjà en mode édition, on sauvegarde les modifications
+    saveAbsence(absence);
   } else {
-    alert('Aucune absence sélectionnée');
+    // Sinon, on passe cette absence en mode édition
+    editingAbsence.value = absence.id;
   }
 };
 
-// Supprimer l'absence sélectionnée
-const deleteSelectedAbsence = () => {
-  if (selectedAbsence.value) {
-    axios
-      .delete(`http://localhost:5000/api/absences/${selectedAbsence.value.id}`)
-      .then(() => getAllAbsences())
-      .catch((err) => console.log(err));
-  } else {
-    alert('Aucune absence sélectionnée');
+const saveAbsence = async (absence) => {
+  try {
+    await axios.put(`http://localhost:5000/api/absences/${absence.id}`, {
+      date_absence: absence.date_absence,
+      type_absence: absence.type_absence,
+      justification: absence.justification,
+    });
+    alert("Absence mise à jour avec succès");
+    editingAbsence.value = null; // Quitter le mode édition
+    getAllAbsences(); // Recharge la liste après modification
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de la mise à jour de l'absence");
   }
+};
+
+// Confirmer la suppression d'une absence
+const confirmDelete = (absence) => {
+  selectedAbsence.value = absence;
+  isModalOpen.value = true;
+};
+
+// Supprimer l'absence sélectionnée
+const deleteAbsence = async () => {
+  try {
+    await axios.delete(`http://localhost:5000/api/absences/${selectedAbsence.value.id}`);
+    alert("Absence supprimée avec succès");
+    getAllAbsences(); // Recharge la liste après suppression
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de la suppression de l'absence");
+  } finally {
+    closeModal();
+  }
+};
+
+// Fermer la modale
+const closeModal = () => {
+  isModalOpen.value = false;
 };
 
 // Charger les absences au montage
@@ -139,10 +208,10 @@ const menuOpen = ref(false);
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
+
 </script>
 
 <style scoped>
-/* Arrière-plan global */
 .absence-page-container {
   background-color: #f0f8ff;
   height: 100vh;
@@ -230,18 +299,60 @@ const toggleMenu = () => {
   background-color: #e0f7fa;
 }
 
-/* Panneau de contrôle */
-.control-panel {
-  margin-top: 20px;
+/* Modale */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
 }
 
-/* Barre d'état */
-.status-bar {
-  margin-top: 10px;
-  background-color: #f5f5f5;
-  padding: 10px;
-  border-top: 1px solid #ddd;
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
 }
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn-danger {
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: darkred;
+}
+
+.btn-primary {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: blue;
+}
+
 </style>
