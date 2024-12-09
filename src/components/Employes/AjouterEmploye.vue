@@ -1,15 +1,16 @@
 <template>
-
-
-<div class="employe-page-container">
+  <div class="employe-page-container">
     <!-- Menu à gauche avec une image en arrière-plan -->
-    <div class="menu-absence-sidebar" :class="{ open: menuOpen }">
+    <div class="menu-employe-sidebar" :class="{ open: menuOpen }">
       <div class="menu-header" @click="toggleMenu">
         <h3>Menu Absences</h3>
       </div>
       <ul v-if="menuOpen">
-        <li><RouterLink to="/add-absence">Ajouter une employe</RouterLink></li>
-        <li><RouterLink to="/absences">Liste des Employes</RouterLink></li>
+        <li><RouterLink to="/employes">Liste des Employés</RouterLink></li>
+          <li><RouterLink to="/ajouter-employe">Ajouter un Employé</RouterLink></li>
+          <li><RouterLink :to="`/employes/${employeId}/absences`">Voir les absences de l'employé</RouterLink></li>
+          <li><RouterLink to="/ajouter-role">Ajouter un rôle à un employé</RouterLink></li>
+          <li><RouterLink to="/employe/:id/roles">Rôles d'un Employé</RouterLink></li>
         <li><a @click.prevent="goBack" href="#">⬅ Retour</a></li>
       </ul>
     </div>
@@ -20,14 +21,14 @@
         <img src="@/assets/menu-icon.png" alt="Menu" class="menu-icon" />
       </div>
     </header>
-  <!-- Contenu principal -->
-  <div class="main-content">
+
+    <!-- Contenu principal -->
+    <div class="main-content">
       <div class="employee-add-container">
         <h2>Ajouter un Employé</h2>
 
         <!-- Formulaire d'ajout d'un employé -->
         <form @submit.prevent="submitEmploye">
-          <!-- Champ pour le nom de l'employé -->
           <div class="form-group">
             <label for="nom">Nom de l'employé :</label>
             <input
@@ -41,7 +42,6 @@
             />
           </div>
 
-          <!-- Champ pour le prénom de l'employé -->
           <div class="form-group">
             <label for="prenom">Prénom de l'employé :</label>
             <input
@@ -55,7 +55,6 @@
             />
           </div>
 
-          <!-- Champ pour l'email de l'employé -->
           <div class="form-group">
             <label for="email">Email de l'employé :</label>
             <input
@@ -69,7 +68,6 @@
             />
           </div>
 
-          <!-- Champ pour le téléphone de l'employé -->
           <div class="form-group">
             <label for="telephone">Téléphone :</label>
             <input
@@ -83,7 +81,6 @@
             />
           </div>
 
-          <!-- Champ pour l'adresse de l'employé -->
           <div class="form-group">
             <label for="adresse">Adresse :</label>
             <input
@@ -97,7 +94,6 @@
             />
           </div>
 
-          <!-- Champ pour la date d'embauche -->
           <div class="form-group">
             <label for="date_d_embauche">Date d'embauche :</label>
             <input
@@ -110,12 +106,24 @@
             />
           </div>
 
-          <!-- Boutons Enregistrer et Retourner -->
+          <div class="form-group">
+            <label for="mot_de_passe">Mot de passe :</label>
+            <input
+              v-model="employe.mot_de_passe"
+              type="password"
+              id="mot_de_passe"
+              placeholder="Entrez un mot de passe"
+              required
+              aria-required="true"
+              aria-label="Mot de passe"
+            />
+          </div>
+
           <div class="button-group">
             <button
               type="submit"
               class="save-button"
-              :disabled="!employe.nom || !employe.prenom || !employe.email || !employe.telephone || !employe.adresse || !employe.date_d_embauche"
+              :disabled="!isFormValid()"
             >
               Enregistrer
             </button>
@@ -126,12 +134,16 @@
         </form>
       </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import axios from 'axios'
+import { ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+const router = useRouter(); 
+
 
 const employe = ref({
   nom: '',
@@ -139,34 +151,65 @@ const employe = ref({
   email: '',
   telephone: '',
   adresse: '',
-  date_d_embauche: ''
-})
+  date_d_embauche: '',
+  mot_de_passe: ''
+});
 
-// Fonction pour soumettre le formulaire
-const submitEmploye = async () => {
-  try {
-    const response = await axios.post('http://localhost:5000/api/employes', employe.value)
-    alert('Employé créé avec succès!')
-  } catch (error) {
-    console.log(error)
-    alert("Erreur lors de la création de l'employé.")
+const validateEmploye = () => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const phoneRegex = /^[0-9]{10}$/;
+  const mdpRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+
+  if (!emailRegex.test(employe.value.email)) {
+    alert("Veuillez entrer un email valide.");
+    return false;
   }
-}
+  if (!phoneRegex.test(employe.value.telephone)) {
+    alert("Veuillez entrer un numéro de téléphone valide (10 chiffres).");
+    return false;
+  }
+  if (!mdpRegex.test(employe.value.mot_de_passe)) {
+    alert("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.");
+    return false;
+  }
+  return true;
+};
 
-// Contrôle de l'ouverture du menu
+const isFormValid = () => {
+  return (
+    employe.value.nom &&
+    employe.value.prenom &&
+    employe.value.email &&
+    employe.value.telephone &&
+    employe.value.adresse &&
+    employe.value.date_d_embauche &&
+    employe.value.mot_de_passe
+  );
+};
+
+const submitEmploye = async () => {
+  if (!validateEmploye()) return;
+
+  try {
+    const response = await axios.post('http://localhost:5000/api/employes', [employe.value]);
+    alert("Employé ajouté avec succès !");
+    Object.keys(employe.value).forEach((key) => (employe.value[key] = ''));
+  } catch (error) {
+    console.error(error);
+    alert(error.response?.data?.message || "Erreur lors de l'ajout de l'employé.");
+  }
+};
+
 const menuOpen = ref(false);
-
-// Fonction pour basculer l'état du menu
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
 
-// Fonction pour revenir à la page précédente
 const goBack = () => {
   router.back();
 };
-
 </script>
+
 
 <style scoped>
 .employee-add-container {
@@ -221,7 +264,7 @@ input, textarea {
 
 
 /* Menu à gauche */
-.menu-absence-sidebar {
+.menu-employe-sidebar {
   position: fixed;
   top: 0;
   left: 0;
@@ -234,31 +277,31 @@ input, textarea {
   z-index: 1000;
 }
 
-.menu-absence-sidebar ul {
+.menu-employe-sidebar ul {
   list-style-type: none;
   padding: 0;
 }
 
-.menu-absence-sidebar li {
+.menu-employe-sidebar li {
   margin: 15px 0;
 }
 
-.menu-absence-sidebar a {
+.menu-employe-sidebar a {
   color: white;
   text-decoration: none;
 }
 
-.menu-absence-sidebar .menu-header {
+.menu-employe-sidebar .menu-header {
   display: flex;
   align-items: center;
   cursor: pointer;
 }
 
-.menu-absence-sidebar {
+.menu-employe-sidebar {
   transform: translateX(-250px);
 }
 
-.menu-absence-sidebar.open {
+.menu-employe-sidebar.open {
   transform: translateX(0);
 }
 
