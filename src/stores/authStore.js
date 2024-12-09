@@ -4,26 +4,34 @@ import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 
 const useAuthStore = defineStore('auth', () => {
-    const user = ref({})
+    const employe = ref({})
     const token = ref(null)
     const router = useRouter()
 
     // Mettre a jour les variables (setters)
-    const setUser = newUser => user.value = newUser
+    const setEmploye = newEmploye => employe.value = newEmploye
     const setToken = newToken => token.value = newToken
 
     //Se deconnecter
     const logout = () => {
-        setUser(null)
+        setEmploye(null)
         setToken(null)
         router.push('/login')
     }
 
+    const login = async (infoLogin) => {
+        const employeData = await useAuth().login(infoLogin);
+        setEmploye(employeData.employe);
+        setToken(employeData.token);
+        router.push("/employes");
+      };
+      
+
     //Recuperer les valeurs (getters)
     const currentToken = computed(() => token.value)
-    const currentUser = computed(() => user.value)
+    const currentEmploye = computed(() => employe.value)
 
-    return { setToken, setUser,user,token, currentToken, currentUser, logout }
+    return { setToken, setEmploye,employe,token, currentToken, currentEmploye, logout  , login}
 },
     {
         persist: true

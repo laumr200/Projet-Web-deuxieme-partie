@@ -126,15 +126,23 @@ const resetForm = () => {
 const submitAbsence = async () => {
   if (!validateAbsence()) return;
 
+  const url = import.meta.env.VITE_BASE_URL + "/absences"; // Assurez-vous que cette variable est correctement configurée.
   try {
-    const response = await axios.post('/api/absences', { absences: [absence.value] });
-    alert(response.data.message || 'Absence ajoutée avec succès');
+    const response = await axios.post(url, {
+      date_absence: absence.value.date_absence,
+      type_absence: absence.value.type_absence,
+      justification: absence.value.justification || "", // Ajout d'une valeur par défaut si justification est vide.
+    });
+
+    alert(response.data.message || "Absence ajoutée avec succès");
     resetForm();
-    router.push('/absences');
+    router.push('/absences'); // Redirection vers la liste des absences après le succès.
   } catch (error) {
-    alert(error.response?.data?.message || 'Absence non enregistrée.');
+    console.error("Erreur lors de l'ajout de l'absence :", error.response?.data || error.message);
+    alert(error.response?.data?.message || "Erreur lors de l'ajout de l'absence.");
   }
 };
+
 
 // Contrôle de l'ouverture du menu
 const menuOpen = ref(false);

@@ -8,7 +8,7 @@
         <ul v-if="menuOpen">
           <li><RouterLink to="/add-absence">Ajouter une absence</RouterLink></li>
           <li><RouterLink to="/absences">Liste des Absences</RouterLink></li>
-          <li><a @click.prevent="goBack" href="#">⬅ Retour</a></li>
+          <li><RouterLink to="/">Retour-Accueil</RouterLink></li>
         </ul>
       </div>
   
@@ -99,10 +99,6 @@ Les rendez-vous médicaux ne sont pas des congés maladie. Ils doivent se prendr
 
   const show = ref(false)
 
-  // Fonction pour revenir à la page précédente
-const goBack = () => {
-  router.back() // Revient à la page précédente dans l'historique
-}
   </script>
   
   <style scoped>

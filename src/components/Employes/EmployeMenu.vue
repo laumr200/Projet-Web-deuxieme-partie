@@ -13,7 +13,7 @@
           <li><RouterLink :to="`/employes/${employeId}/absences`">Voir les absences de l'employé</RouterLink></li>
           <li><RouterLink to="/ajouter-role">Ajouter un rôle à un employé</RouterLink></li>
           <li><RouterLink to="/employe/:id/roles">Rôles d'un Employé</RouterLink></li>
-          <li><a @click.prevent="goBack" href="#">⬅ Retour</a></li>
+          <li><RouterLink to="/">Retour-Accueil</RouterLink></li>
         </ul>
       </div>
   
@@ -47,11 +47,6 @@
   const toggleMenu = () => {
     menuOpen.value = !menuOpen.value
   }
-
-  // Fonction pour revenir à la page précédente
-const goBack = () => {
-  router.back() // Revient à la page précédente dans l'historique
-}
 
   </script>
   

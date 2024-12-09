@@ -1,23 +1,19 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router'
 
-import RoleList from '../components/Role/RoleList.vue';
-import AddRole from '../components/Role/AddRole.vue';
-import EmployeList from '../components/Employes/EmployeList.vue';
-import AjouterEmploye from '../components/Employes/AjouterEmploye.vue';
-import EmployesAbsences from '../components/Employes/EmployesAbsences.vue';
-import EmployeAddRole from '../components/Employes/EmployeAddRole.vue';
-import EmployeRolesList from '../components/Employes/EmployeRolesList.vue';
-import EmployeMenu from '../components/Employes/EmployeMenu.vue';
-import AbsenceAdd from '../components/Absence/AbsenceAdd.vue';
-import AbsenceList from '../components/Absence/AbsenceList.vue';
-import AbsenceMenu from '../components/Absence/AbsenceMenu.vue';
-import Accueil from '../components/Accueil.vue';
-import Login from '../components/auth/Login.vue';
-import RoleMenu from '../components/Role/RoleMenu.vue';
-
-// Import the new components for Auditlog and Rapport
-import Auditlog from '../components/Auditlog.vue';
-import Rapport from '../components/Rapport.vue';
+import RoleList from '../components/Role/RoleList.vue'
+import AddRole from '../components/Role/AddRole.vue'
+import EmployeList from '../components/Employes/EmployeList.vue'
+import AjouterEmploye from '../components/Employes/AjouterEmploye.vue'
+import EmployesAbsences from '../components/Employes/EmployesAbsences.vue'
+import EmployeAddRole from '../components/Employes/EmployeAddRole.vue'
+import EmployeRolesList from '../components/Employes/EmployeRolesList.vue'
+import EmployeMenu from '../components/Employes/EmployeMenu.vue'
+import AbsenceAdd from '../components/Absence/AbsenceAdd.vue'
+import AbsenceList from '../components/Absence/AbsenceList.vue'
+import AbsenceMenu from '../components/Absence/AbsenceMenu.vue'
+import Accueil from '../components/Accueil.vue'
+import Login from '../components/auth/Login.vue'
+import RoleMenu from '../components/Role/RoleMenu.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,24 +26,24 @@ const router = createRouter({
     {
       path: '/add-role',
       name: 'add-role',
-      component: AddRole,
+     component:AddRole
+      
     },
     {
       path: '/employes',
       name: 'employelist',
-      component: EmployeList,
+      component: EmployeList, // Nouvelle route pour la liste des utilisateurs
     },
     {
       path: '/ajouter-employe',
       name: 'AjouterEmploye',
-      component: AjouterEmploye,
+      component: AjouterEmploye  // Nouvelle page d'ajout d'employé
     },
     {
       path: '/employes/:id/absences',
       name: 'Absences',
       component: EmployesAbsences,
-    },
-    {
+    },{
       path: '/ajouter-role',
       name: 'AjouterRole',
       component: EmployeAddRole,
@@ -55,23 +51,23 @@ const router = createRouter({
     {
       path: '/employe/:id/roles',
       name: 'RolesEmploye',
-      component: EmployeRolesList,
-      props: true,
+      component: EmployeRolesList, // Page pour afficher les rôles de l'employé
+      props: true, // Passer l'ID de l'employé comme prop
     },
     {
-      path: '/employe-menu',
+      path: '/employe-menu',  // La route vers votre EmployeMenu.vue
       name: 'EmployeMenu',
       component: EmployeMenu,
     },
     {
-      path: '/add-absence',
+      path: '/add-absence', // Chemin pour accéder à la vue
       name: 'AddAbsence',
       component: AbsenceAdd,
     },
     {
-      path: '/absences',
+      path: '/absences', // URL de la page
       name: 'AbsencesList',
-      component: AbsenceList,
+      component: AbsenceList, // Composant lié
     },
     {
       path: '/absence-menu',
@@ -99,18 +95,7 @@ const router = createRouter({
       component: RoleMenu,
     },
 
-    // Add the new routes for Auditlog and Rapport
-    {
-      path: '/auditlog',
-      name: 'Auditlog',
-      component: Auditlog,
-    },
-    {
-      path: '/rapport',
-      name: 'Rapport',
-      component: Rapport,
-    },
   ],
-});
+})
 
-export default router;
+export default router
