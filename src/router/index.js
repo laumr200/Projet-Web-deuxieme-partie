@@ -14,6 +14,8 @@ import AbsenceMenu from '../components/Absence/AbsenceMenu.vue'
 import Accueil from '../components/Accueil.vue'
 import Login from '../components/auth/Login.vue'
 import RoleMenu from '../components/Role/RoleMenu.vue'
+import Auditlog from '../components/Rapports/Auditlog.vue'
+import Rapport from '../components/Rapports/Rapport.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -94,7 +96,16 @@ const router = createRouter({
       name: 'RoleMenu',
       component: RoleMenu,
     },
-
+    {
+      path: '/auditlog',
+      name: 'Auditlog',
+      component: Auditlog,
+    },
+    {
+      path: '/rapport',
+      name: 'Rapport',
+      component: Rapport,
+    },
   ],
 })
 

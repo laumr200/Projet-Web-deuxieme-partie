@@ -9,6 +9,8 @@
         <li><router-link to="/absence-menu">Absences</router-link></li>
         <li><router-link to="/employe-menu">Employés</router-link></li>
         <li><router-link to="/role-menu">Roles</router-link></li>
+        <li><router-link to="/auditlog">Journal des événements</router-link></li>
+        <li><router-link to="/rapport">Rapports d'Absence et de Retard</router-link></li>
       </ul>
     </div>
 
