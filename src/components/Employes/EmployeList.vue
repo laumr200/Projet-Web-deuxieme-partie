@@ -7,9 +7,9 @@
       </div>
       <ul v-if="menuOpen">
         <li><RouterLink to="/ajouter-employe">Ajouter un Employé</RouterLink></li>
-          <li><RouterLink :to="`/employes/${employeId}/absences`">Voir les absences de l'employé</RouterLink></li>
-          <li><RouterLink to="/ajouter-role">Ajouter un rôle à un employé</RouterLink></li>
-          <li><RouterLink to="/employe/:id/roles">Rôles d'un Employé</RouterLink></li>
+        <li><RouterLink :to="`/employes/${employeId}/absences`">Voir les absences de l'employé</RouterLink></li>
+        <li><RouterLink to="/ajouter-role">Ajouter un rôle à un employé</RouterLink></li>
+        <li><RouterLink to="/employe/:id/roles">Rôles d'un Employé</RouterLink></li>
         <li><a @click.prevent="goBack" href="#">⬅ Retour</a></li>
       </ul>
     </div>
@@ -42,12 +42,12 @@
               </thead>
               <tbody>
                 <!-- Message si aucun employé -->
-                <tr v-if="employes.length === 0">
+                <tr v-if="paginatedEmployes.length === 0">
                   <td colspan="5" class="text-center">Aucun employé trouvé.</td>
                 </tr>
-                <!-- Liste des employés -->
+                <!-- Liste des employés avec pagination -->
                 <tr
-                  v-for="employe in employes"
+                  v-for="employe in paginatedEmployes"
                   :key="employe.id"
                   @click="selectEmploye(employe)"
                   :class="{ selected: selectedEmploye && selectedEmploye.id === employe.id }"
@@ -88,6 +88,12 @@
           </v-col>
         </v-row>
 
+        <!-- Pagination -->
+        <div class="pagination">
+          <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)">⬅ Page Précédent</button>
+          <button :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">Page Suivant ➡</button>
+        </div>
+
         <!-- Barre d'état -->
         <div class="status-bar">
           <p>
@@ -112,7 +118,7 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import axios from 'axios';
 
 const employes = ref([]);
@@ -121,9 +127,27 @@ const menuOpen = ref(false);
 const isModalOpen = ref(false);
 const editingEmploye = ref(null);
 
+const currentPage = ref(1);
+const itemsPerPage = 5;
+
+const totalPages = computed(() => Math.ceil(employes.value.length / itemsPerPage));
+
+const paginatedEmployes = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return employes.value.slice(start, end);
+});
+
+// Changer de page
+const changePage = (page) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
 // Charger la liste des employés depuis l'API
 const getEmployes = () => {
-  const token = localStorage.getItem('token'); 
+  const token = localStorage.getItem('token');
   if (!token) {
     console.error("Token manquant. Veuillez vous connecter.");
     return;
@@ -135,13 +159,12 @@ const getEmployes = () => {
       }
     })
     .then((res) => {
-      console.log(res.data);
       employes.value = res.data;
     })
     .catch((err) => {
-    console.error("Erreur lors de la récupération des employés :", err.response?.data || err.message);
-  });
-  };
+      console.error("Erreur lors de la récupération des employés :", err.response?.data || err.message);
+    });
+};
 
 // Modifier l'employé sélectionné
 const editEmploye = (employe) => {
@@ -159,7 +182,7 @@ const deleteEmploye = async () => {
   try {
     await axios.delete(`http://localhost:5000/api/employes/${selectedEmploye.value.id}`);
     alert("Employé supprimé avec succès");
-    getEmployes(); // Recharge la liste après suppression
+    getEmployes();
   } catch (err) {
     console.error(err);
     alert("Erreur lors de la suppression de l'employé");
@@ -173,12 +196,9 @@ const closeModal = () => {
   isModalOpen.value = false;
 };
 
-
 onBeforeMount(() => {
   getEmployes();
-  console.log(employes.value); // Vérifie que les employés sont bien chargés
 });
-
 
 // Sélectionner un employé
 const selectEmploye = (employe) => {
@@ -194,7 +214,6 @@ const goBack = () => {
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
-
 </script>
 
 <style scoped>
@@ -339,6 +358,28 @@ const toggleMenu = () => {
 
 .btn-primary:hover {
   background-color: blue;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 </style>

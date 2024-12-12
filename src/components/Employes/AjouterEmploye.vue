@@ -159,7 +159,16 @@ const validateEmploye = () => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const phoneRegex = /^[0-9]{10}$/;
   const mdpRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/;
+  const nameRegex =/^[a-zA-Z]{4,}$/ // /^(([A-Za-z]+[\-\']?)*([A-Za-z]+)?\s)+([A-Za-z]+[\-\']?)*([A-Za-z]+)?$/
 
+  if (!nameRegex.test(employe.value.name)) {
+    alert("Veuillez entrer un nom valide.");
+    return false;
+  }
+  if (!nameRegex.test(employe.value.prenom)) {
+    alert("Veuillez entrer un prenom valide.");
+    return false;
+  }
   if (!emailRegex.test(employe.value.email)) {
     alert("Veuillez entrer un email valide.");
     return false;
@@ -187,12 +196,26 @@ const isFormValid = () => {
   );
 };
 
+// Réinitialiser le formulaire après soumission
+const resetForm = () => {
+  employe.value = {
+    nom : '',
+    prenom :'',
+    email: '',
+    telephone :'',
+    adresse:'',
+    date_d_embauche :'',
+    mot_de_passe:'',
+  };
+};
+
 const submitEmploye = async () => {
   if (!validateEmploye()) return;
-
+   
   try {
     const response = await axios.post('http://localhost:5000/api/employes', [employe.value]);
     alert("Employé ajouté avec succès !");
+    resetForm();
     Object.keys(employe.value).forEach((key) => (employe.value[key] = ''));
   } catch (error) {
     console.error(error);

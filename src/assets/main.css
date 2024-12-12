@@ -1,61 +1,79 @@
-/* Ajoutez cette section à la fin de votre fichier main.css */
+/* 1. Reset CSS pour une base cohérente */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-/* Écran mobile (moins de 600px) */
-@media (max-width: 600px) {
-  h1 {
-    font-size: 2em; /* Réduit la taille des titres */
-  }
+/* 2. Typographie flexible */
+html {
+  font-size: 100%; /* 16px par défaut */
+}
 
-  body {
-    flex-direction: column; /* Arrange le contenu verticalement sur les petits écrans */
-    padding: 1rem;
-  }
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding: 10px;
+}
 
-  #app {
-    padding: 1rem;
-  }
+/* 3. Conteneur principal avec des marges responsives */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
-  button {
-    width: 100%; /* Les boutons prennent toute la largeur */
-    font-size: 0.9em;
-  }
+/* 4. Images et médias adaptatifs */
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
 
-  .card {
-    padding: 1rem; /* Réduit les marges et espaces */
+/* 5. Grille flexible pour les mises en page */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.col {
+  flex: 1;
+  min-width: 200px;
+}
+
+/* 6. Boutons et formulaires adaptés */
+button, input, select, textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* 7. Styles adaptatifs pour différentes tailles d'écran */
+@media (max-width: 1200px) {
+  .container {
+    width: 95%;
   }
 }
 
-/* Tablettes (entre 600px et 900px) */
-@media (min-width: 601px) and (max-width: 900px) {
-  h1 {
-    font-size: 2.5em;
+@media (max-width: 768px) {
+  html {
+    font-size: 90%; /* Réduire la taille globale de la police */
   }
 
-  body {
-    flex-direction: column;
-    padding: 2rem;
-  }
-
-  #app {
-    max-width: 90%;
-  }
-
-  button {
-    font-size: 1em;
-  }
-
-  .card {
-    padding: 1.5rem;
+  .col {
+    min-width: 100%; /* Une seule colonne sur les petits écrans */
   }
 }
 
-/* Grand écran (au-delà de 1280px) */
-@media (min-width: 1280px) {
-  #app {
-    max-width: 1200px;
+@media (max-width: 480px) {
+  html {
+    font-size: 80%; /* Encore plus petit pour les très petits écrans */
   }
 
-  .card {
-    padding: 3rem;
+  body {
+    padding: 5px;
   }
 }

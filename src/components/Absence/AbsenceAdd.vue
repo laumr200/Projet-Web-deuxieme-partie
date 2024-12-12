@@ -126,12 +126,12 @@ const resetForm = () => {
 const submitAbsence = async () => {
   if (!validateAbsence()) return;
 
-  const url = import.meta.env.VITE_BASE_URL + "/absences"; // Assurez-vous que cette variable est correctement configurée.
+  const url = import.meta.env.VITE_BASE_URL + "/absences"; 
   try {
     const response = await axios.post(url, {
       date_absence: absence.value.date_absence,
       type_absence: absence.value.type_absence,
-      justification: absence.value.justification || "", // Ajout d'une valeur par défaut si justification est vide.
+      justification: absence.value.justification || "", 
     });
 
     alert(response.data.message || "Absence ajoutée avec succès");

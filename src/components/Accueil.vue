@@ -1,5 +1,6 @@
 <template>
   <div class="homepage">
+    <link rel="stylesheet" href="main.css">
     <!-- Menu latéral -->
     <div class="sidebar" :class="{ open: menuOpen }">
       <div class="menu-header" @click="toggleMenu">
@@ -9,6 +10,9 @@
         <li><router-link to="/absence-menu">Absences</router-link></li>
         <li><router-link to="/employe-menu">Employés</router-link></li>
         <li><router-link to="/role-menu">Roles</router-link></li>
+        <li><router-link to="/conge">Conge</router-link></li>
+        <li><router-link to="/retard">Retard</router-link></li>
+        <li><router-link to="/alerte-menu">Alerte</router-link></li>
         <li><router-link to="/auditlog">Journal des événements</router-link></li>
         <li><router-link to="/rapport">Rapports d'Absence et de Retard</router-link></li>
       </ul>

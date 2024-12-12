@@ -40,47 +40,47 @@
               </thead>
               <tbody>
                 <!-- Message si aucune absence -->
-                <tr v-if="absences.length === 0">
+                <tr v-if="paginatedAbsences.length === 0">
                   <td colspan="5" class="text-center">Aucune absence trouvée.</td>
                 </tr>
-                <!-- Liste des absences -->
+                <!-- Liste des absences paginées -->
                 <tr
-    v-for="absence in absences"
-    :key="absence.id"
-    @click="selectAbsence(absence)"
-    :class="{ selected: selectedAbsence && selectedAbsence.id === absence.id }"
-  >
-    <td>{{ absence.id }}</td>
-    <td>
-      <input
-        v-if="editingAbsence === absence.id"
-        type="date"
-        v-model="absence.date_absence"
-      />
-      <span v-else>{{ absence.date_absence }}</span>
-    </td>
-    <td>
-      <input
-        v-if="editingAbsence === absence.id"
-        type="text"
-        v-model="absence.type_absence"
-      />
-      <span v-else>{{ absence.type_absence }}</span>
-    </td>
-    <td>
-      <input
-        v-if="editingAbsence === absence.id"
-        type="text"
-        v-model="absence.justification"
-      />
-      <span v-else>{{ absence.justification || 'Non spécifiée' }}</span>
-    </td>
-    <td>
-      <!-- Boutons d'action -->
-      <v-btn  class="btn btn-primary" @click.stop="editAbsence(absence)">Modifier</v-btn>
-      <v-btn  class="btn btn-danger" @click.stop="confirmDelete(absence)">Supprimer</v-btn>
-    </td>
-  </tr>
+                  v-for="absence in paginatedAbsences"
+                  :key="absence.id"
+                  @click="selectAbsence(absence)"
+                  :class="{ selected: selectedAbsence && selectedAbsence.id === absence.id }"
+                >
+                  <td>{{ absence.id }}</td>
+                  <td>
+                    <input
+                      v-if="editingAbsence === absence.id"
+                      type="date"
+                      v-model="absence.date_absence"
+                    />
+                    <span v-else>{{ absence.date_absence }}</span>
+                  </td>
+                  <td>
+                    <input
+                      v-if="editingAbsence === absence.id"
+                      type="text"
+                      v-model="absence.type_absence"
+                    />
+                    <span v-else>{{ absence.type_absence }}</span>
+                  </td>
+                  <td>
+                    <input
+                      v-if="editingAbsence === absence.id"
+                      type="text"
+                      v-model="absence.justification"
+                    />
+                    <span v-else>{{ absence.justification || 'Non spécifiée' }}</span>
+                  </td>
+                  <td>
+                    <!-- Boutons d'action -->
+                    <v-btn class="btn btn-primary" @click.stop="editAbsence(absence)">Modifier</v-btn>
+                    <v-btn class="btn btn-danger" @click.stop="confirmDelete(absence)">Supprimer</v-btn>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </v-col>
@@ -93,6 +93,7 @@
             {{ selectedAbsence ? `Absence ID ${selectedAbsence.id}` : 'Aucune absence sélectionnée' }}
           </p>
         </div>
+
       </div>
     </div>
 
@@ -106,19 +107,24 @@
         </div>
       </div>
     </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container">
+      <button @click="previousPage" :disabled="currentPage === 1">⬅ Page Précédent</button>
+    
+      <button @click="nextPage" :disabled="currentPage === totalPages">Page Suivant➡</button>
+    </div>
   </div>
 </template>
 
-
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, computed } from 'vue';
 import axios from 'axios';
 
 // Liste des absences et absence sélectionnée
 const absences = ref([]);
 const selectedAbsence = ref(null);
 const editingAbsence = ref(null); // Absence en mode édition
-
 
 // État de la modale
 const isModalOpen = ref(false);
@@ -134,13 +140,10 @@ const getAllAbsences = () => {
 };
 
 // Modifier une absence
-
 const editAbsence = (absence) => {
   if (editingAbsence.value === absence.id) {
-    // Si l'absence est déjà en mode édition, on sauvegarde les modifications
     saveAbsence(absence);
   } else {
-    // Sinon, on passe cette absence en mode édition
     editingAbsence.value = absence.id;
   }
 };
@@ -153,8 +156,8 @@ const saveAbsence = async (absence) => {
       justification: absence.justification,
     });
     alert("Absence mise à jour avec succès");
-    editingAbsence.value = null; // Quitter le mode édition
-    getAllAbsences(); // Recharge la liste après modification
+    editingAbsence.value = null;
+    getAllAbsences();
   } catch (err) {
     console.error(err);
     alert("Erreur lors de la mise à jour de l'absence");
@@ -172,7 +175,7 @@ const deleteAbsence = async () => {
   try {
     await axios.delete(`http://localhost:5000/api/absences/${selectedAbsence.value.id}`);
     alert("Absence supprimée avec succès");
-    getAllAbsences(); // Recharge la liste après suppression
+    getAllAbsences();
   } catch (err) {
     console.error(err);
     alert("Erreur lors de la suppression de l'absence");
@@ -209,9 +212,34 @@ const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
 
+// Pagination
+const pageSize = 7;
+const currentPage = ref(1);
+
+const totalPages = computed(() => Math.ceil(absences.value.length / pageSize));
+
+const paginatedAbsences = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  const end = start + pageSize;
+  return absences.value.slice(start, end);
+});
+
+const previousPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--;
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++;
+  }
+};
+
 </script>
 
 <style scoped>
+/* Conteneur principal */
 .absence-page-container {
   background-color: #f0f8ff;
   height: 100vh;
@@ -221,7 +249,7 @@ const toggleMenu = () => {
   font-family: Arial, sans-serif;
 }
 
-/* Menu à gauche */
+/* Menu latéral */
 .menu-absence-sidebar {
   position: fixed;
   top: 0;
@@ -293,6 +321,22 @@ const toggleMenu = () => {
   background-color: white;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.table th {
+  background-color: #f2f2f2;
+}
+
+.table tr:hover {
+  background-color: #f5f5f5;
 }
 
 .selected {
@@ -352,7 +396,35 @@ const toggleMenu = () => {
 }
 
 .btn-primary:hover {
-  background-color: blue;
+  background-color: darkblue;
 }
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.pagination-button, .pagination-number {
+  padding: 10px 15px;
+  margin: 0 5px;
+  background-color: #f2f2f2;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.pagination-number.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 
 </style>

@@ -16,6 +16,11 @@ import Login from '../components/auth/Login.vue'
 import RoleMenu from '../components/Role/RoleMenu.vue'
 import Auditlog from '../components/Rapports/Auditlog.vue'
 import Rapport from '../components/Rapports/Rapport.vue'
+import AlerteAdd from '../components/Alerte/AlerteAdd.vue'
+import AlerteList from '../components/Alerte/AlerteList.vue'
+import AlerteMenu from '../components/Alerte/AlerteMenu.vue'
+import Conge from '../components/conge/Conge.vue';
+import Retard from '../components/Retard/Retard.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -105,6 +110,31 @@ const router = createRouter({
       path: '/rapport',
       name: 'Rapport',
       component: Rapport,
+    },
+    {
+      path: '/alerte-menu',
+      name: 'AlerteMenu',
+      component: AlerteMenu,
+    },
+    {
+      path: '/alerteadd',
+      name: 'AlerteAjouter',
+      component: AlerteAdd,
+    },
+    {
+      path: '/alertelist',
+      name: 'AlerteList',
+      component: AlerteList,
+    },
+    {
+      path: '/conge',
+      name: 'Conge',
+      component: Conge,
+    },
+    {
+      path: '/retard',
+      name: 'Retard',
+      component: Retard,
     },
   ],
 })
